@@ -1,0 +1,20 @@
+volumes:
+  postgis-data:
+
+services:
+  carpark-db:
+    image: kartoza/postgis:15-3.3
+    volumes:
+      - postgis-data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=car_park_db,accounts_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=postgres
+      # Add extensions you need to be enabled by default in the DB. Default are the five specified below
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting,postgis_tiger_geocoder
+      - RUN_AS_ROOT=true
+    ports:
+      - "5432:5432"
+    restart: on-failure
+    healthcheck:
+      test: "PGPASSWORD=postgres pg_isready -h 127.0.0.1 -U postgres -d car_park_db"
