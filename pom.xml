@@ -13,6 +13,7 @@
         <module>configserver</module>
         <module>eurekaserver</module>
         <module>gatewayserver</module>
+        <module>carpark-etl</module>
     </modules>
 
 </project>
