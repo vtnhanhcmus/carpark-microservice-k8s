@@ -1,5 +1,6 @@
 package com.carparketl;
 
+import com.carparketl.repositories.CarParkRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -15,26 +16,33 @@ import java.util.Date;
 @SpringBootApplication
 @EnableBatchProcessing
 @Slf4j
-public class CarparkEtlApplication implements CommandLineRunner {
+public class CarParkEtlApplication implements CommandLineRunner {
 
 	@Autowired
 	JobLauncher jobLauncher;
 
 	@Autowired
-	Job jobImportCsvCarParkInfo;
+	Job jobImportCarParkInfo;
+
+	@Autowired
+	CarParkRepository carParkRepository;
 
 	public static void main(String[] args) {
-		SpringApplication.run(CarparkEtlApplication.class, args);
+		SpringApplication.run(CarParkEtlApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		JobExecution execution = jobLauncher.run(
-				jobImportCsvCarParkInfo,
-				new JobParametersBuilder().addDate("start_time", new Date())
-						.addString("name job", jobImportCsvCarParkInfo.getName())
-						.toJobParameters()
-		);
-		log.info("Exit status: {}", execution.getStatus());
+
+		Long count = carParkRepository.count();
+		if (count == 0){
+			JobExecution execution = jobLauncher.run(
+					jobImportCarParkInfo,
+					new JobParametersBuilder().addDate("start_time", new Date())
+							.addString("name job", jobImportCarParkInfo.getName())
+							.toJobParameters()
+			);
+			log.info("Exit status: {}", execution.getStatus());
+		}
 	}
 }

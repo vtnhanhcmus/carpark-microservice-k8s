@@ -2,6 +2,7 @@ package com.carparketl.config;
 
 import com.carparketl.dtos.CarParkDto;
 import com.carparketl.entities.CarPark;
+import com.carparketl.listeners.CarParkListener;
 import com.carparketl.processers.CarParkProcessor;
 import com.carparketl.readers.CarParkReader;
 import com.carparketl.writers.CarParkInfoWriter;
@@ -36,9 +37,6 @@ public class CarParkBatch {
     StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    DataSource dataSource;
-
-    @Autowired
     CarParkReader carParkReader;
 
     @Autowired
@@ -47,13 +45,19 @@ public class CarParkBatch {
     @Autowired
     CarParkProcessor carParkProcessor;
 
+    @Autowired
+    CarParkListener carParkListener;
 
-    @Bean
-    public Job jobImportCarParkInfo(){
-        return jobBuilderFactory.get("importCsvCarParkInfo").start(step()).build();
+
+    @Bean(name = "jobImportCarParkInfo")
+    public Job job(){
+        return jobBuilderFactory.get("importCsvCarParkInfo")
+                .listener(carParkListener)
+                .flow(step())
+                .end().build();
     }
 
-    @Bean
+    @Bean("stepProcessCarParkInfo")
     public Step step(){
         return stepBuilderFactory.get("stepProcessCarParkInfo")
                 .<CarParkDto, CarPark>chunk(100)
@@ -63,19 +67,19 @@ public class CarParkBatch {
                 .build();
     }
 
-    @Bean
+    @Bean(name = "readerCarPark")
     public ItemReader<CarParkDto> reader(){
         return carParkReader.reader();
     }
 
-    @Bean
+    @Bean(name = "processorCarPark")
     public ItemProcessor<CarParkDto, CarPark> processor(){
         final CompositeItemProcessor<CarParkDto, CarPark> processors = new CompositeItemProcessor<>();
         processors.setDelegates(Arrays.asList(carParkProcessor));
         return processors;
     }
 
-    @Bean
+    @Bean(name = "writerCarPark")
     public ItemWriter<CarPark> writer() {
         return carParkInfoWriter;
     }
