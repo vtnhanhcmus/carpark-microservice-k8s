@@ -2,13 +2,13 @@ package com.carpark.carparks.entities;
 
 
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.*;
 
 @Builder
 @Entity
