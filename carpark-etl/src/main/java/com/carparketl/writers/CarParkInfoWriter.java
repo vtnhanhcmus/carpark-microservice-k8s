@@ -1,6 +1,6 @@
 package com.carparketl.writers;
 
-import com.carparketl.CarParkRepository;
+import com.carparketl.repositories.CarParkRepository;
 import com.carparketl.entities.CarPark;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;

@@ -14,6 +14,7 @@
         <module>eurekaserver</module>
         <module>gatewayserver</module>
         <module>carpark-etl</module>
+        <module>carparks</module>
     </modules>
 
 </project>
