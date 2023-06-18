@@ -35,8 +35,10 @@ public class AvailabilityProcessor implements ItemProcessor<AvailabilityDto, Ava
         if (availability == null){
             availability = new Availability();
             CarPark carPark = carParkRepository.findByCarParkNo(availabilityDto.getCarParkNo());
+            if (carPark == null){
+                return null;
+            }
             availability.setCarPark(carPark);
-
             availability.setTotalLots(availabilityDto.getTotalLots());
             availability.setLotsAvailable(availabilityDto.getLotsAvailable());
         }

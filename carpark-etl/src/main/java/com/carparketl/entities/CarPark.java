@@ -1,10 +1,7 @@
 package com.carparketl.entities;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.coyote.Constants;
 import org.hibernate.annotations.GenericGenerator;
 import org.locationtech.jts.geom.Point;
@@ -17,6 +14,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class CarPark {
 
     @Id
