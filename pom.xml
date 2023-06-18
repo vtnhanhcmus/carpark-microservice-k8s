@@ -15,6 +15,7 @@
         <module>gatewayserver</module>
         <module>carpark-etl</module>
         <module>carparks</module>
+        <module>bookings</module>
     </modules>
 
 </project>

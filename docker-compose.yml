@@ -7,7 +7,7 @@ services:
     volumes:
       - postgis-data:/var/lib/postgresql
     environment:
-      - POSTGRES_DB=car_park_db,accounts_db
+      - POSTGRES_DB=car_park_db,accounts_db,bookings_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASS=postgres
       # Add extensions you need to be enabled by default in the DB. Default are the five specified below
