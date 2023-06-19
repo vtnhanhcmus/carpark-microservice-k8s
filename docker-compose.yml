@@ -1,5 +1,13 @@
 version: "3.8"
 services:
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - carpark-microservice
+
   carpark-db:
     image: kartoza/postgis:15-3.3
     volumes:
@@ -19,12 +27,165 @@ services:
     networks:
       - carpark-microservice
 
-  zipkin:
-    image: openzipkin/zipkin
+  configserver:
+    build:
+      context: configserver
+      dockerfile: Dockerfile
     ports:
-      - "9411:9411"
+      - "8071:8071"
     networks:
       - carpark-microservice
+    depends_on:
+      - zipkin
+    deploy:
+      resources:
+        limits:
+          memory: 700MB
+    environment:
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+  eurekaserver:
+#    image: carpark-microservice/eurekaserver:latest
+    build:
+      context: eurekaserver
+      dockerfile: Dockerfile
+    ports:
+      - "8070:8070"
+    networks:
+      - carpark-microservice
+    depends_on:
+      - configserver
+    deploy:
+      resources:
+        limits:
+          memory: 700MB
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_APPLICATION_NAME: eurekaserver
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+  gatewayserver:
+#    image: carpark-microservice/gatewayserver:latest
+    build:
+      context: gatewayserver
+      dockerfile: Dockerfile
+    ports:
+      - "8072:8072"
+    networks:
+      - carpark-microservice
+    depends_on:
+      - configserver
+      - eurekaserver
+      - bookings
+      - carparks
+      - accounts
+      - carpark-db
+    deploy:
+      resources:
+        limits:
+          memory: 700MB
+      restart_policy:
+        condition: on-failure
+        delay: 45s
+        max_attempts: 3
+        window: 180s
+    environment:
+      SPRING_APPLICATION_NAME: gatewayserver
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+  accounts:
+#    image: carpark-microservice/accounts:latest
+    build:
+      context: accounts
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - carpark-microservice
+    depends_on:
+      - configserver
+      - eurekaserver
+      - carpark-db
+    deploy:
+      resources:
+        limits:
+          memory: 700MB
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_APPLICATION_NAME: accounts
+      SPRING_DATASOURCE_URL: jdbc:postgresql://carpark-db:5432/accounts_db
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+  bookings:
+#    image: carpark-microservice/bookings:latest
+    build:
+      context: bookings
+      dockerfile: Dockerfile
+    ports:
+      - "10000:10000"
+    networks:
+      - carpark-microservice
+    depends_on:
+      - configserver
+      - eurekaserver
+      - carpark-db
+    deploy:
+      resources:
+        limits:
+          memory: 700MB
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_APPLICATION_NAME: bookings
+      SPRING_DATASOURCE_URL: jdbc:postgresql://carpark-db:5432/bookings_db
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+  carparks:
+#    image: carpark-microservice/carparks:latest
+    build:
+      context: carparks
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - carpark-microservice
+    depends_on:
+      - configserver
+      - eurekaserver
+      - carpark-db
+    deploy:
+      resources:
+        limits:
+          memory: 700MB
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_APPLICATION_NAME: carparks
+      SPRING_DATASOURCE_URL: jdbc:postgresql://carpark-db:5432/car_park_db
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
 
 volumes:
   postgis-data:
