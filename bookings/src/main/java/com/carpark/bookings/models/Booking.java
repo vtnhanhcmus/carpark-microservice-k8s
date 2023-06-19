@@ -5,25 +5,33 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.Date;
 
 @Builder
 @Entity
-@Table(name = "accounts")
+@Table(name = "booking")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Booking {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_gen")
+    @SequenceGenerator(name="booking_gen", sequenceName="booking_seq")
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "account_id", nullable = false)
+    private Long accountId;
 
-    @Column(name = "email", nullable = false)
-    private String email;
+    @Column(name = "car_park_no")
+    private String carParkNo;
 
-    @Column(name = "mobile_number", nullable = false)
-    private String mobileNumber;
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
+    @Column(name = "created_date", nullable = false)
+    private Date createdDate;
 
 }

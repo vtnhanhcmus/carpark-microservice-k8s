@@ -7,15 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("carparks")
 public class CarParkController {
 
     @Autowired
     private CarParkService carParkService;
 
-    @GetMapping("/{parkNo}")
-    public ResponseEntity<CarParkDTO> carParkDetail(@PathVariable("parkNo") String parkNo) {
-        CarParkDTO carParkDTO = carParkService.findCarParkDetail(parkNo);
-        return ResponseEntity.ok(carParkDTO);
+    @GetMapping("{parkNo}/detail")
+    public CarParkDTO carParkDetail(@PathVariable("parkNo") String parkNo) {
+        return carParkService.findCarParkDetail(parkNo);
     }
 
 }
