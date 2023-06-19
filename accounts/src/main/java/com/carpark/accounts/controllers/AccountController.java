@@ -6,6 +6,7 @@ import com.carpark.accounts.models.Accounts;
 import com.carpark.accounts.services.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,11 @@ public class AccountController {
     @GetMapping("{id}/detail")
     public AccountDto getAccountDetails(@PathVariable("id") Long id) {
         return accountService.findById(id);
+    }
+
+    @PostMapping("/create")
+    public AccountDto createBooking(@RequestBody AccountDto accountRequest){
+        return accountService.create(accountRequest);
     }
 
     @GetMapping("account/config")
