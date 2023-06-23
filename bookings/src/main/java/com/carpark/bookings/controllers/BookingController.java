@@ -44,5 +44,10 @@ public class BookingController {
         return ResponseEntity.ok(bookingDetailDto);
     }
 
+    @GetMapping("/config")
+    public String testProperty(){
+        log.info(bookingProperties.getMgs());
+        return bookingService.toString();
+    }
 
 }

@@ -29,7 +29,7 @@ public class AccountController {
         return accountService.create(accountRequest);
     }
 
-    @GetMapping("account/config")
+    @GetMapping("/config")
     public String testProperty(){
         log.info(accountProperties.getMgs());
         return accountProperties.toString();
