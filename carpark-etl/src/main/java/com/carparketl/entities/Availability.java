@@ -1,11 +1,11 @@
 package com.carparketl.entities;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @Builder
@@ -16,7 +16,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class Availability {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "carpark_gen")
+    @SequenceGenerator(name="carpark_gen", sequenceName="carpark_seq")
     private Long id;
 
     @OneToOne(fetch = FetchType.EAGER)

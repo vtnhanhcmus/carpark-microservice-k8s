@@ -1,12 +1,10 @@
 package com.carparketl.entities;
 
 
+import jakarta.persistence.*;
 import lombok.*;
-import org.apache.coyote.Constants;
-import org.hibernate.annotations.GenericGenerator;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.*;
 
 @Builder
 @Entity
@@ -18,7 +16,8 @@ import javax.persistence.*;
 public class CarPark {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "carpark_gen")
+    @SequenceGenerator(name="carpark_gen", sequenceName="carpark_seq")
     private Long id;
 
     @Column(name = "car_park_no", nullable = false, unique = true)

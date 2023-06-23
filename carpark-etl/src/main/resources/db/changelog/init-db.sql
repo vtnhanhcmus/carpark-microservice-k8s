@@ -1,5 +1,9 @@
 
 CREATE SEQUENCE hibernate_sequence START 1;
+CREATE SEQUENCE carpark_seq
+  MINVALUE 1
+  START WITH 50
+  INCREMENT BY 50;
 
 CREATE TABLE car_park (
     id serial PRIMARY KEY,

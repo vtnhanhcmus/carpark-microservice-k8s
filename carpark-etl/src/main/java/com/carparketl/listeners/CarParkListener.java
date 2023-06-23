@@ -16,16 +16,17 @@ import java.util.Date;
 
 @Component
 @Slf4j
-public class CarParkListener extends JobExecutionListenerSupport {
+public class CarParkListener implements JobExecutionListener {
 
     @Autowired
     private AvailabilityLauncher availabilityLauncher;
 
+
     @SneakyThrows
     @Override
     public void afterJob(JobExecution jobExecution) {
-
         log.info("launcher job availability");
         availabilityLauncher.launcher();
     }
+
 }

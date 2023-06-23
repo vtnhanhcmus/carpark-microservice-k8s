@@ -4,6 +4,7 @@ import com.carparketl.entities.Availability;
 import com.carparketl.repositories.AvailabilityRepository;
 import com.carparketl.utils.CarParkUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,11 +18,13 @@ public class AvailabilityWriter implements ItemWriter<Availability> {
     @Autowired
     private AvailabilityRepository availabilityRepository;
 
+
     @Override
-    public void write(List<? extends Availability> list){
+    public void write(Chunk<? extends Availability> chunk){
         log.info("processing write availability info");
-        List<Availability> data = list.stream().filter(i -> i != null).filter(CarParkUtils.distinctByKey(Availability::getCarPark)).collect(Collectors.toList());
+        List<Availability> data = chunk.getItems().stream().filter(i -> i != null).filter(CarParkUtils.distinctByKey(Availability::getCarPark)).collect(Collectors.toList());
         availabilityRepository.saveAll(data);
     }
+
 
 }
