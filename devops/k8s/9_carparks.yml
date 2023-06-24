@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: carparks-deployment
+  labels:
+    app: carparks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: carparks
+  template:
+    metadata:
+      labels:
+        app: carparks
+    spec:
+      containers:
+      - name: carparks
+        image: vtnhanhcmus/carparks:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4000
+        env:
+        - name: SPRING_APPLICATION_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: carpark-configmap
+              key: CARPARKS_APPLICATION_NAME
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: carpark-configmap
+              key: CARPARKS_DATASOURCE_URL
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom: 
+            configMapKeyRef:
+              name: carpark-configmap
+              key: SPRING_PROFILES_ACTIVE
+        - name: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
+          valueFrom: 
+            configMapKeyRef:
+              name: carpark-configmap
+              key: MANAGEMENT_ZIPKIN_TRACING_ENDPOINT
+        - name: SPRING_CONFIG_IMPORT
+          valueFrom: 
+            configMapKeyRef:
+              name: carpark-configmap
+              key: SPRING_CONFIG_IMPORT
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          valueFrom: 
+            configMapKeyRef:
+              name: carpark-configmap
+              key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: carparks-service
+spec:
+  selector:
+    app: carparks
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000

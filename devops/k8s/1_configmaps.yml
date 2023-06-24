@@ -7,8 +7,16 @@ data:
     SPRING_PROFILES_ACTIVE: prod
     SPRING_CONFIG_IMPORT: configserver:http://configserver-service:8071/
     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver-service:8070/eureka/
+    ACCOUNTS_DATASOURCE_URL: jdbc:postgresql://carpark-db-service:5432/accounts_db
+    CARPARKETL_DATASOURCE_URL: jdbc:postgresql://carpark-db-service:5432/car_park_db
+    CARPARKS_DATASOURCE_URL: jdbc:postgresql://carpark-db-service:5432/car_park_db
+    BOOKINGS_DATASOURCE_URL: jdbc:postgresql://carpark-db-service:5432/bookings_db
+    CARPARK_DB: car_park_db,accounts_db,bookings_db
+    CARPARK_USER: postgres
+    CARPARK_PASS: postgres
     EUREKA_APPLICATION_NAME: eurekaserver
     ACCOUNTS_APPLICATION_NAME: accounts
-    CARPARK_APPLICATION_NAME: carpark
+    CARPARKS_APPLICATION_NAME: carparks
+    CARPARKETL_APPLICATION_NAME: carparketl
     BOOKINGS_APPLICATION_NAME: bookings
     GATEWAY_APPLICATION_NAME: gatewayserver
