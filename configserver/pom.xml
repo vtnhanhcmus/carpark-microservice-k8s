@@ -73,7 +73,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>carpark-microservice/${project.artifactId}</name>
+						<name>vtnhanhcmus/${project.artifactId}</name>
 					</image>
 				</configuration>
 			</plugin>

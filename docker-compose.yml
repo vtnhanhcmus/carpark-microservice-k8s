@@ -28,9 +28,7 @@ services:
       - carpark-microservice
 
   configserver:
-    build:
-      context: configserver
-      dockerfile: Dockerfile
+    image: carpark/configserver
     ports:
       - "8071:8071"
     networks:
@@ -45,10 +43,7 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
 
   eurekaserver:
-#    image: carpark-microservice/eurekaserver:latest
-    build:
-      context: eurekaserver
-      dockerfile: Dockerfile
+    image: carpark/eurekaserver
     ports:
       - "8070:8070"
     networks:
@@ -70,10 +65,7 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
 
   gatewayserver:
-#    image: carpark-microservice/gatewayserver:latest
-    build:
-      context: gatewayserver
-      dockerfile: Dockerfile
+    image: carpark/gatewayserver
     ports:
       - "8072:8072"
     networks:
@@ -102,9 +94,7 @@ services:
 
   accounts:
 #    image: carpark-microservice/accounts:latest
-    build:
-      context: accounts
-      dockerfile: Dockerfile
+    image: carpark/accounts
     ports:
       - "8080:8080"
     networks:
@@ -130,10 +120,7 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
 
   bookings:
-#    image: carpark-microservice/bookings:latest
-    build:
-      context: bookings
-      dockerfile: Dockerfile
+    image: carpark/bookings
     ports:
       - "10000:10000"
     networks:
@@ -159,10 +146,7 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
 
   carparks:
-#    image: carpark-microservice/carparks:latest
-    build:
-      context: carparks
-      dockerfile: Dockerfile
+    image: carpark/carparks
     ports:
       - "4000:4000"
     networks:
