@@ -37,11 +37,18 @@ public class BookingController {
 
     @PostMapping("/create")
     public ResponseEntity<BookingDetailDto> createBooking(@RequestBody BookingDto bookingRequest){
-        BookingDto bookingDto = bookingService.createBooking(bookingRequest);
-        CarParkDTO carParkDto = carParkFeignService.getDetailCarPark(bookingRequest.getCarParkNo());
-        AccountDto accountDto = accountFeignService.getDetailAccount(bookingDto.getAccountId());
-        BookingDetailDto bookingDetailDto = BookingDetailDto.builder().booking(bookingDto).carPark(carParkDto).account(accountDto).build();
-        return ResponseEntity.ok(bookingDetailDto);
+        log.info("process create booking");
+        Boolean hasSlot = carParkFeignService.checkSlot(bookingRequest.getCarParkNo());
+        if (hasSlot){
+            CarParkDTO carParkDto = carParkFeignService.getDetailCarPark(bookingRequest.getCarParkNo());
+            AccountDto accountDto = accountFeignService.getDetailAccount(bookingRequest.getAccountId());
+            BookingDto bookingDto = bookingService.createBooking(bookingRequest);
+            carParkFeignService.updateSlot(bookingRequest.getCarParkNo());
+            BookingDetailDto bookingDetailDto = BookingDetailDto.builder().booking(bookingDto).carPark(carParkDto).account(accountDto).build();
+            return ResponseEntity.ok(bookingDetailDto);
+        }
+        return null;
+
     }
 
     @GetMapping("/config")
