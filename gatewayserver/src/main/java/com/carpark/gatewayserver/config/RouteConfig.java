@@ -13,7 +13,7 @@ public class RouteConfig {
         return builder.routes()
                 .route("accounts-route", r -> r.path("/carparks/accounts/**").filters(f -> f.rewritePath("/carparks/accounts/(?<segment>.*)","/accounts/${segment}")).uri("lb://accounts"))
                 .route("bookings-route", r -> r.path("/carparks/bookings/**").filters(f -> f.rewritePath("/carparks/bookings/(?<segment>.*)","/bookings/${segment}")).uri("lb://bookings"))
-                .route("carpark-route", r -> r.path("/carparks/carparks/**").filters(f -> f.rewritePath("/carparks/carparks/(?<segment>.*)","/carparks/${segment}")).uri("lb://carparks"))
+                .route("carparks-main-route", r -> r.path("/carparks/main/**").filters(f -> f.rewritePath("/carparks/main/(?<segment>.*)","/carparks/${segment}")).uri("lb://carparks"))
                 .build();
     }
 
