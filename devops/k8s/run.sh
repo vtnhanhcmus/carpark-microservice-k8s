@@ -9,3 +9,5 @@ kubectl apply -f 5_apigateway.yml
 kubectl apply -f 6_carpark_db.yml
 kubectl apply -f 7_accounts.yml
 kubectl apply -f 8_carpark_etl.yml
+kubectl apply -f 9_carparks.yml
+kubectl apply -f 10_bookings.yml

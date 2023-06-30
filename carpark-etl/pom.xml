@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.carparketl</groupId>
-	<artifactId>carpark-etl</artifactId>
+	<artifactId>carparketl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>carpark-etl</name>
 	<description>Carpark ETL Spring boot</description>
