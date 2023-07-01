@@ -1,10 +1,16 @@
 package com.carpark.bookings.services;
 
+import com.carpark.bookings.dtos.AccountDto;
+import com.carpark.bookings.dtos.BookingDetailDto;
 import com.carpark.bookings.dtos.BookingDto;
+import com.carpark.bookings.dtos.CarParkDTO;
 import com.carpark.bookings.models.Booking;
 import com.carpark.bookings.repositories.BookingRepository;
+import com.carpark.bookings.services.feign.AccountFeignService;
+import com.carpark.bookings.services.feign.CarParkFeignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,6 +23,12 @@ public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private AccountFeignService accountFeignService;
+
+    @Autowired
+    private CarParkFeignService carParkFeignService;
+
     public BookingDto findById(Long id){
         Optional<Booking> booking = bookingRepository.findById(id);
         if (booking.isPresent()){
@@ -25,11 +37,21 @@ public class BookingService {
         return null;
     }
 
-    public BookingDto createBooking(BookingDto bookingDto){
+    public BookingDetailDto createBooking(BookingDto bookingRequest){
         log.info("process create booking");
-        Booking booking = convertToEntity(bookingDto);
-        bookingRepository.save(booking);
-        return convertToDto(booking);
+
+        Boolean hasSlot = carParkFeignService.checkSlot(bookingRequest.getCarParkNo());
+        if (hasSlot){
+            CarParkDTO carParkDto = carParkFeignService.getDetailCarPark(bookingRequest.getCarParkNo());
+            AccountDto accountDto = accountFeignService.getDetailAccount(bookingRequest.getAccountId());
+            carParkFeignService.updateSlot(bookingRequest.getCarParkNo());
+            Booking booking = convertToEntity(bookingRequest);
+            bookingRepository.save(booking);
+            return BookingDetailDto.builder().booking(convertToDto(booking)).carPark(carParkDto).account(accountDto).build();
+        }
+
+        return null;
+
     }
 
     private BookingDto convertToDto(Booking booking){

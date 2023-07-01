@@ -1,6 +1,19 @@
 version: "3.8"
 services:
 
+  redis-db:
+    image: redis:4.0.11
+    container_name: redis-db
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - /tmp/redis/data/:/data
+    networks:
+      - carpark-microservice
+
+  
+
   zipkin:
     image: openzipkin/zipkin
     ports:

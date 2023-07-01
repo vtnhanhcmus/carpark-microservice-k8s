@@ -1,4 +1,4 @@
-package com.carpark.bookings.controllers.feign;
+package com.carpark.bookings.services.feign;
 
 import com.carpark.bookings.dtos.CarParkDTO;
 import org.springframework.cloud.openfeign.FeignClient;
