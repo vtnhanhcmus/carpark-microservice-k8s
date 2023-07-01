@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class BookingDetailDto {
     private BookingDto booking;
     private AccountDto account;
-    private CarParkDTO carPark;
+    private CarParkDto carPark;
 }

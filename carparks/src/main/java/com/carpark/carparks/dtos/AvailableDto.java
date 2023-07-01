@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AvailableDTO {
+public class AvailableDto {
     private String address;
     private String coordinateAsText;
     private Integer totalLots;

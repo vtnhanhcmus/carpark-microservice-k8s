@@ -1,4 +1,4 @@
-package com.carpark.carparks.dtos;
+package com.carpark.bookings.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CarParkDTO {
+public class CarParkDto {
     @JsonProperty("car_park_no")
     private String carParkNo;
     @JsonProperty("address")

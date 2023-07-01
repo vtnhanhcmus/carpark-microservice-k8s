@@ -1,16 +1,13 @@
 package com.carpark.bookings.services;
 
-import com.carpark.bookings.dtos.AccountDto;
-import com.carpark.bookings.dtos.BookingDetailDto;
-import com.carpark.bookings.dtos.BookingDto;
-import com.carpark.bookings.dtos.CarParkDTO;
+import com.carpark.bookings.dtos.*;
 import com.carpark.bookings.models.Booking;
 import com.carpark.bookings.repositories.BookingRepository;
 import com.carpark.bookings.services.feign.AccountFeignService;
 import com.carpark.bookings.services.feign.CarParkFeignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,6 +26,9 @@ public class BookingService {
     @Autowired
     private CarParkFeignService carParkFeignService;
 
+    @Autowired
+    private KafkaTemplate<Object, Object> kafkaTemplate;
+
     public BookingDto findById(Long id){
         Optional<Booking> booking = bookingRepository.findById(id);
         if (booking.isPresent()){
@@ -42,11 +42,11 @@ public class BookingService {
 
         Boolean hasSlot = carParkFeignService.checkSlot(bookingRequest.getCarParkNo());
         if (hasSlot){
-            CarParkDTO carParkDto = carParkFeignService.getDetailCarPark(bookingRequest.getCarParkNo());
+            CarParkDto carParkDto = carParkFeignService.getDetailCarPark(bookingRequest.getCarParkNo());
             AccountDto accountDto = accountFeignService.getDetailAccount(bookingRequest.getAccountId());
-            carParkFeignService.updateSlot(bookingRequest.getCarParkNo());
             Booking booking = convertToEntity(bookingRequest);
             bookingRepository.save(booking);
+            kafkaTemplate.send("booking_topic", BookingMsg.builder().carParkNo(bookingRequest.getCarParkNo()).quality(bookingRequest.getQuantity()).msg("SUCCESS").build());
             return BookingDetailDto.builder().booking(convertToDto(booking)).carPark(carParkDto).account(accountDto).build();
         }
 

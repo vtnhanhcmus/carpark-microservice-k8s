@@ -1,12 +1,8 @@
 package com.carpark.bookings.controllers;
 
 import com.carpark.bookings.config.BookingProperties;
-import com.carpark.bookings.services.feign.AccountFeignService;
-import com.carpark.bookings.services.feign.CarParkFeignService;
-import com.carpark.bookings.dtos.AccountDto;
 import com.carpark.bookings.dtos.BookingDetailDto;
 import com.carpark.bookings.dtos.BookingDto;
-import com.carpark.bookings.dtos.CarParkDTO;
 import com.carpark.bookings.services.BookingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

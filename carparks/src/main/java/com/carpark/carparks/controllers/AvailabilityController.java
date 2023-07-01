@@ -20,11 +20,4 @@ public class AvailabilityController {
         return availabilityService.checkSlot(parkNo);
     }
 
-    @PostMapping("{parkNo}/updateSlot")
-    public ResponseEntity<Void> createBooking(@PathVariable("parkNo") String parkNo){
-        log.info("process update slot ");
-        availabilityService.updateSlot(parkNo);
-        return ResponseEntity.noContent().build();
-    }
-
 }
