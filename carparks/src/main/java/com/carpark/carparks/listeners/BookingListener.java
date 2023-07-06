@@ -17,7 +17,8 @@ public class BookingListener {
     private AvailabilityRepository availabilityRepository;
 
     @CacheEvict(value = "car_park_no_slot", key = "#bookingMsg.carParkNo")
-    @KafkaListener(id = "bookingGroup", topics = "booking_topic")
+    @KafkaListener
+            (id = "${booking.topic.group.id}", topics = "${booking.topic.name}", containerFactory = "bookingKafkaListener")
     public void updateSlot(BookingMsg bookingMsg){
         log.info("listener for update slot with car park no {}", bookingMsg.getCarParkNo());
 
@@ -31,8 +32,4 @@ public class BookingListener {
         availabilityRepository.save(availability);
     }
 
-    @KafkaListener(id = "dltGroup", topics = "booking_topic.DLT")
-    public void dltListen(byte[] in) {
-        log.info("Received from DLT: " + new String(in));
-    }
 }

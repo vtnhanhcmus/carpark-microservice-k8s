@@ -13,7 +13,8 @@ services:
       - carpark-microservice
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.0.1
+    image: confluentinc/cp-zookeeper:7.4.0
+    hostname: zookeeper
     container_name: zookeeper
     ports:
       - "2181:2181"
@@ -24,10 +25,11 @@ services:
       - carpark-microservice
 
   broker:
-    image: confluentinc/cp-kafka:7.0.1
+    image: confluentinc/cp-server:7.4.0
     container_name: broker
     ports:
       - "9092:9092"
+    restart: on-failure
     depends_on:
       - zookeeper
     environment:
@@ -37,6 +39,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     networks:
       - carpark-microservice
@@ -45,6 +48,8 @@ services:
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
+    depends_on:
+      - broker
     networks:
       - carpark-microservice
 

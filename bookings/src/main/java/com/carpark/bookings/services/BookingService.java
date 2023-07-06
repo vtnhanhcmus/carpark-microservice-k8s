@@ -7,6 +7,7 @@ import com.carpark.bookings.services.feign.AccountFeignService;
 import com.carpark.bookings.services.feign.CarParkFeignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,10 @@ public class BookingService {
     private CarParkFeignService carParkFeignService;
 
     @Autowired
-    private KafkaTemplate<Object, Object> kafkaTemplate;
+    private KafkaTemplate<String, BookingMsg> bookingKafkaTemplate;
+
+    @Value(value = "${booking.topic.name}")
+    private String bookingTopic;
 
     public BookingDto findById(Long id){
         Optional<Booking> booking = bookingRepository.findById(id);
@@ -46,7 +50,13 @@ public class BookingService {
             AccountDto accountDto = accountFeignService.getDetailAccount(bookingRequest.getAccountId());
             Booking booking = convertToEntity(bookingRequest);
             bookingRepository.save(booking);
-            kafkaTemplate.send("booking_topic", BookingMsg.builder().carParkNo(bookingRequest.getCarParkNo()).quality(bookingRequest.getQuantity()).msg("SUCCESS").build());
+
+            BookingMsg bookingMsg = new BookingMsg();
+            bookingMsg.setCarParkNo(bookingRequest.getCarParkNo());
+            bookingMsg.setQuality(bookingRequest.getQuantity());
+            bookingMsg.setMsg("SUCCESS");
+
+            bookingKafkaTemplate.send(bookingTopic, bookingMsg);
             return BookingDetailDto.builder().booking(convertToDto(booking)).carPark(carParkDto).account(accountDto).build();
         }
 
