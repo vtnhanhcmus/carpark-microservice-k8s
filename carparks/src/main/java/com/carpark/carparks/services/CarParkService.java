@@ -7,6 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -28,5 +33,17 @@ public class CarParkService {
                     .build();
         }
         return null;
+    }
+
+    public List<CarParkDto> listCarPark(){
+        Iterable<CarPark> carParks = carParkRepository.findAll();
+        List<CarParkDto> carParkDtos = new ArrayList<>();
+        carParks.forEach(c -> {
+            carParkDtos.add(CarParkDto.builder().carParkNo(c.getCarParkNo()).address(c.getAddress())
+                    .xCoord(c.getCoordinate().getX())
+                    .yCoord(c.getCoordinate().getY())
+                    .build());
+        });
+        return carParkDtos;
     }
 }

@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("carpark")
 @Slf4j
@@ -20,6 +22,11 @@ public class CarParkController {
     @GetMapping("{parkNo}/detail")
     public CarParkDto carParkDetail(@PathVariable("parkNo") String parkNo) {
         return carParkService.findCarParkDetail(parkNo);
+    }
+
+    @GetMapping("/list")
+    public List<CarParkDto> carParkList() {
+        return carParkService.listCarPark();
     }
 
     @GetMapping("/config")
